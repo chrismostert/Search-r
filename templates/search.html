@@ -12,8 +12,8 @@
 		<title>Search-r</title>
 	</head>
     <body>
-        <div class="row">
-            <div class="col-8" style="margin: 1em auto;">
+        <div>
+            <div style="width:60%; float:left; margin: 1em auto;">
                 <div class="row" style="border-bottom: 1px solid #CCC">
                     <div class="col-sm-2" style=" margin-left: 1em">
                         <h1 style="font-size: 2em; font-weight: bold;">
@@ -31,7 +31,10 @@
                         </form>
                     </div>
                 </div>
-                <div style="margin: 1em;">
+                <div class="results" style="margin: 1em;">
+                    {% if totalpages == 0 %}
+                        No results.
+                    {% endif %}
                     {% for entry in entries %}
                         <div class="card  mb-3" style="cursor: pointer;" >
                             <div class="row no-gutters">
@@ -79,8 +82,10 @@
                 </nav>
                 </div>
             </div>
-            <div class="col-sm-4" style="height:100%; background-color: #EFEFEF">
-                Hello
+            <div class="col-sm-4" style="height:100%;width:39%; float:right;position:fixed;right:0; background-color: #EFEFEF">
+                <h2>Selected documents</h2>
+                <ul class="list-group selectedlist">
+                </ul>
             </div>
         </div>
     </body>
