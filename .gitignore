@@ -1,5 +1,5 @@
 /aquaint
 /index
-website/venv
-website/.idea
-website/__pycache__
+/venv
+/.idea
+/__pycache__
