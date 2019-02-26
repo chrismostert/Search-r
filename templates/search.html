@@ -11,20 +11,46 @@
 	</head>
     <body>
         <div class="row">
-            <div class="col-sm-8" style="margin: 1em auto;">
-                <div style="margin: 10em auto">
-                    <h1 style="text-align: center; font-size: 5em; font-weight: bold;">
-                        <span style="color: #4285f4">S</span><span style="color: #ea4335">e</span><span style="color: #fbbc05">a</span><span style="color: #34a853">r</span><span style="color: #ea4335">c</span><span style="color: #4285f4">h</span><span style="color: #34a853">`</span><span style="color: #fbbc05">r</span>
-                    </h1>
-                    <form  action="search" method="GET" novalidate>
-                        <div class="input-group" style="width: 90%; margin: 0 auto;">
-                            <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" name="q" autofocus>
+            <div class="col-8" style="margin: 1em auto;">
+                <div class="row" style="border-bottom: 1px solid #CCC">
+                    <div class="col-sm-2">
+                        <h1 style="font-size: 2em; font-weight: bold;">
+                            <span style="color: #4285f4">S</span><span style="color: #ea4335">e</span><span style="color: #fbbc05">a</span><span style="color: #34a853">r</span><span style="color: #ea4335">c</span><span style="color: #4285f4">h</span><span style="color: #34a853">`</span><span style="color: #fbbc05">r</span>
+                        </h1>
+                    </div>
+                    <div class="col-8">
+                        <form  action="search" method="GET" novalidate>
+                            <div class="input-group mb-3">
+                              <input type="text" value="{{ q }}" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2"  name="q" >
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div style="margin: 1em;">
+                    {% for entry in entries %}
+                        <div class="card  mb-3" >
+                            <div class="row no-gutters">
+                                <div style="max-width: 2em" class="col-md-1">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
+                                        <label style="margin: 1.3em 1.3em;" class="custom-control-label" for="customControlAutosizing"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ entry["title"] }}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{ entry["docid"] }}</h6>
+                                        <p class="highlight card-text">{{ entry["highlight"] |safe }}</p>
+                                        <p style="display:none" class="fulltext card-text">{{ entry["content"] |safe }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="input-group" style="margin: 0 auto; width: 15em; margin-top: 1em;">
-                            <button type="submit" class="btn btn-light">Search</button>
-                            <button type="submit" class="btn btn-light" style="margin-left: 1em">I'm feeling lucky</button>
-                        </div>
-                    </form>
+                    <p>{{ page }}</p>
+                    {% endfor %}
                 </div>
 
             </div>
