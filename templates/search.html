@@ -6,6 +6,8 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="{{url_for('static', filename='searchr.js')}}"></script>
 
 		<title>Search-r</title>
 	</head>
@@ -13,7 +15,7 @@
         <div class="row">
             <div class="col-8" style="margin: 1em auto;">
                 <div class="row" style="border-bottom: 1px solid #CCC">
-                    <div class="col-sm-2">
+                    <div class="col-sm-2" style=" margin-left: 1em">
                         <h1 style="font-size: 2em; font-weight: bold;">
                             <span style="color: #4285f4">S</span><span style="color: #ea4335">e</span><span style="color: #fbbc05">a</span><span style="color: #34a853">r</span><span style="color: #ea4335">c</span><span style="color: #4285f4">h</span><span style="color: #34a853">`</span><span style="color: #fbbc05">r</span>
                         </h1>
@@ -23,7 +25,7 @@
                             <div class="input-group mb-3">
                               <input type="text" value="{{ q }}" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2"  name="q" >
                               <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                <button style="width:6em" class="btn btn-outline-primary" type="submit">Search</button>
                               </div>
                             </div>
                         </form>
@@ -31,28 +33,51 @@
                 </div>
                 <div style="margin: 1em;">
                     {% for entry in entries %}
-                        <div class="card  mb-3" >
+                        <div class="card  mb-3" style="cursor: pointer;" >
                             <div class="row no-gutters">
-                                <div style="max-width: 2em" class="col-md-1">
-                                    <div class="custom-control custom-checkbox mr-sm-2">
-                                        <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
-                                        <label style="margin: 1.3em 1.3em;" class="custom-control-label" for="customControlAutosizing"></label>
+                                <div class="col-md-1" style="max-width: 2.5em;">
+                                    <div style="margin: 1.5em 0em" class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="cardselect">
                                     </div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-10">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ entry["title"] }}</h5>
                                         <h6 class="card-subtitle mb-2 text-muted">{{ entry["docid"] }}</h6>
                                         <p class="highlight card-text">{{ entry["highlight"] |safe }}</p>
                                         <p style="display:none" class="fulltext card-text">{{ entry["content"] |safe }}</p>
+                                        <a href="#" class="card-link revealer">Reveal full-text</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <p>{{ page }}</p>
                     {% endfor %}
                 </div>
 
+                <div >
+                <nav aria-label="...">
+                <ul style="margin: 0 auto; display: inline-flex" class="pagination">
+                    <li class="page-item {% if currentpage==1 %}disabled {% endif %}">
+
+                        <a class="page-link" href="?q={{ q }}&p={{ currentpage-1 }}">Previous</a>
+                    </li>
+                    {% for i in range(0 if 0 > currentpage-5 else currentpage-5, totalpages if totalpages < currentpage+4 else currentpage+4) %}
+                        <li class="page-item {% if currentpage==i+1 %}active {% endif %}" {% if currentpage==i+1 %}aria-current="page"{% endif %}>
+
+                            <a class="page-link" href="?q={{ q }}&p={{ i+1 }}">{{ i+1 }}</a>
+
+                            {% if currentpage==i+1 %}<span class="sr-only">(current)</span>{% endif %}
+
+                        </li>
+                    {% endfor %}
+
+                    <li class="page-item {% if currentpage==totalpages %}disabled {% endif %}">
+                        <a class="page-link" href="?q={{ q }}&p={{ currentpage+1 }}">Next</a>
+
+                    </li>
+                </ul>
+                </nav>
+                </div>
             </div>
             <div class="col-sm-4" style="height:100%; background-color: #EFEFEF">
                 Hello

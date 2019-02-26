@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import render_template
 from flask import request
+import numpy as np
 
 import whoosh.index as index
 from whoosh.qparser import QueryParser
@@ -14,18 +15,24 @@ def hello_world():
 
 @app.route('/search', methods=['GET'])
 def search():
+    if "q" not in request.args:
+        return render_template('frontpage.html')
+
     q = request.args.get("q")
+    page = int(request.args.get("p")) if "p" in request.args else 1
     ix = index.open_dir("index")
 
     resultlist = []
     with ix.searcher() as searcher:
         parser = QueryParser("content", ix.schema)
         myquery = parser.parse(q)
-        results = searcher.search_page(myquery, 1)
+        results = searcher.search_page(myquery, page)
         for hit in results:
             resultlist.append({"title": hit['title'], "docid": hit["docID"], "highlight": hit.highlights("content"), "content": hit['content']})
 
-    return render_template('search.html', entries=resultlist, q=q)
+    print(np.ceil(len(results)/10))
+    print(page)
+    return render_template('search.html', entries=resultlist, q=q, totalpages=int(np.ceil(len(results)/10)), currentpage=page)
 
 
 
