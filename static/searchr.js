@@ -59,7 +59,17 @@ $(function () {
     }
 
     $("#toggle_timer").click(function () {
-        alert("The timer usage is toggled.")
+        timer_cookie = Cookies.get('timer');
+        if(typeof timer_cookie === "undefined") {
+            Cookies.set('timer', 'true');
+            alert("The timer is now being used.");
+        } else if (timer_cookie === 'true') {
+            Cookies.set('timer', 'false');
+            alert("The timer is now disabled.");
+        } else if (timer_cookie === 'false'){
+            Cookies.set('timer', 'false');
+            alert("The timer is now being used.");
+        }
     })
 
 })
