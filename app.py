@@ -2,6 +2,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 import numpy as np
+import os
 
 import whoosh.index as index
 from whoosh.qparser import QueryParser
@@ -37,4 +38,11 @@ def search():
 
 
 if __name__ == '__main__':
-    app.run()
+    BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+    index_folder = "{}/index".format(BASE_DIR)
+    if os.path.exists(index_folder):
+        app.run()
+    else:
+        print("The index folder is not present. Exiting.")
+
+
