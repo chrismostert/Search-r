@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
         <script src="{{url_for('static', filename='searchr.js')}}"></script>
 
 		<title>Search-r</title>
@@ -23,7 +24,7 @@
                     <div class="col-8">
                         <form  action="search" method="GET" novalidate>
                             <div class="input-group mb-3">
-                              <input type="text" value="{{ q }}" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2"  name="q" >
+                              <input type="text" value="{{ q }}" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon2"  name="q" >
                               <div class="input-group-append">
                                 <button style="width:6em" class="btn btn-outline-primary" type="submit">Search</button>
                               </div>
