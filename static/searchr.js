@@ -58,6 +58,7 @@ $(function () {
         $(".results").find("."+selected[i]["docid"]).find(".cardselect").trigger("click");
     }
 
+    // Toggle the timer cookie to indicate the use of the timer for this session.
     $("#toggle_timer").click(function () {
         timer_cookie = Cookies.get('timer');
         if(typeof timer_cookie === "undefined") {
