@@ -58,4 +58,8 @@ $(function () {
         $(".results").find("."+selected[i]["docid"]).find(".cardselect").trigger("click");
     }
 
+    $("#toggle_timer").click(function () {
+        alert("The timer usage is toggled.")
+    })
+
 })
