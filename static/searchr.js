@@ -68,7 +68,7 @@ $(function () {
             Cookies.set('timer', 'false');
             alert("The timer is now disabled.");
         } else if (timer_cookie === 'false'){
-            Cookies.set('timer', 'false');
+            Cookies.set('timer', 'true');
             alert("The timer is now being used.");
         }
     })
