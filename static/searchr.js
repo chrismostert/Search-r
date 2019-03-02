@@ -1,6 +1,8 @@
 $(function () {
     const begin_seconds = 5; // At how many seconds should the timer start.
 
+    $('#experiment_explanation').load('static/experiment_explanation.html');
+    $('#assignment_explanation').load('static/assignment_'+Cookies.get('assignment')+'.html');
 
     if (localStorage.selected == undefined) {
         localStorage.selected = "[]";
