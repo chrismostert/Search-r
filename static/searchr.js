@@ -2,7 +2,7 @@ $(function () {
     const begin_seconds = 5; // At how many seconds should the timer start.
 
     $('#experiment_explanation').load('static/experiment_explanation.html');
-    $('#assignment_explanation').load('static/assignment_'+Cookies.get('assignment')+'.html');
+    $('#assignment_explanation').load('static/assignment_' + Cookies.get('assignment') + '.html');
 
     if (localStorage.selected == undefined) {
         localStorage.selected = "[]";
@@ -19,7 +19,7 @@ $(function () {
         e.stopPropagation();
         var elem = $(this);
         var card = $(elem.parent().parent().parent().parent());
-        var selectedList = $(".selectedlist")
+        var selectedList = $(".selectedlist");
         var selected = JSON.parse(localStorage.getItem("selected"));
         var title = card.find(".card-title").text();
         var docid = card.find(".card-subtitle").text().replace(".", "").replace("\\n", "").replace(" ", "");
@@ -45,17 +45,17 @@ $(function () {
     });
     $(".cardselect").parent().parent().click(function () {
         $(this).find(".cardselect").trigger("click");
-    })
+    });
 
     $(".revealer").parent().parent().click(function () {
         $(this).parent().find(".fulltext").toggle("fast");
         $(this).parent().find(".highlight").toggle("fast");
-    })
+    });
 
     $("button[type=submit]").click(function () {
         // $(this).html('<span>Loading...</span>');
         // $(this).attr("disabled","disabled");
-    })
+    });
 
     var selected = JSON.parse(localStorage.getItem("selected"));
     for (var i = 0; i < selected.length; i++) {
@@ -80,6 +80,7 @@ $(function () {
 
     // The function which keeps track of time. It uses cookies, so works across pages.
     var timeoutHandler;
+
     function countdown() {
         var seconds = begin_seconds;
         if (typeof Cookies.get('seconds') !== "undefined") {
@@ -100,12 +101,13 @@ $(function () {
                 done_assignment();
             }
         }
+
         tick();
     }
 
     $(document).ready(function () {
-        if(Cookies.get('timer') === 'true' && false) {
-           countdown();
+        if (Cookies.get('timer') === 'true' && false) {
+            countdown();
         }
     });
 
@@ -121,13 +123,13 @@ $(function () {
     // Function which is called if the current assignment is done (or time has run out).
     function done_assignment() {
         console.log('Done assignment.');
-        if(Cookies.get('timer') === 'true') {
+        if (Cookies.get('timer') === 'true') {
             Cookies.set('seconds', begin_seconds);
             countdown();
         }
 
         var current_assignment = parseInt(Cookies.get('assignment'));
-        if(current_assignment <= 4) {
+        if (current_assignment <= 4) {
             Cookies.set('assignment', parseInt(Cookies.get('assignment')) + 1);
             window.location.replace("/search?q=");
         } else {
