@@ -76,8 +76,8 @@ $(function () {
         }
     });
 
-    // The function which keeps track of time. Uses cookies, so works across pages.
-    var timeoutHandle;
+    // The function which keeps track of time. It uses cookies, so works across pages.
+    var timeoutHandler;
     function countdown() {
         var seconds = begin_seconds;
         if (typeof Cookies.get('seconds') !== "undefined") {
@@ -92,20 +92,24 @@ $(function () {
             console.log(seconds + ' seconds left');
 
             if (seconds > 0) {
-                timeoutHandle = setTimeout(tick, 1000);
+                timeoutHandler = setTimeout(tick, 1000);
             } else {
                 alert('You are out of time! Click to start the next exercise.');
                 Cookies.set('seconds', begin_seconds);
                 countdown();
+                window.location.replace("/search?q=");
             }
         }
         tick();
     }
 
-    $(document).ready(function () {
+    // Start the experiment when the button is pressed.
+    $("#start_experiment").click(function () {
         if(Cookies.get('timer') === 'true') {
            countdown();
         }
+        Cookies.set('assignment', 1);
+        window.location.replace("/search?q=");
     });
 
 });
