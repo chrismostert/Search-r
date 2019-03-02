@@ -1,4 +1,7 @@
 $(function () {
+    const begin_seconds = 5; // At how many seconds should the timer start.
+
+
     if (localStorage.selected == undefined) {
         localStorage.selected = "[]";
     }
@@ -76,10 +79,11 @@ $(function () {
     // The function which keeps track of time. Uses cookies, so works across pages.
     var timeoutHandle;
     function countdown() {
-        var seconds = 5;
+        var seconds = begin_seconds;
         if (typeof Cookies.get('seconds') !== "undefined") {
             seconds = Cookies.get("seconds");
         }
+        console.log('Starting countdown from ' + seconds + ' seconds');
 
         function tick() {
             Cookies.set('seconds', seconds);
@@ -90,7 +94,9 @@ $(function () {
             if (seconds > 0) {
                 timeoutHandle = setTimeout(tick, 1000);
             } else {
-                alert('You are out of time!')
+                alert('You are out of time! Click to start the next exercise.');
+                Cookies.set('seconds', begin_seconds);
+                countdown();
             }
         }
         tick();
