@@ -106,7 +106,7 @@ $(function () {
     }
 
     $(document).ready(function () {
-        if (Cookies.get('timer') === 'true' && false) {
+        if (Cookies.get('timer') === 'true') {
             countdown();
         }
     });
@@ -141,6 +141,8 @@ $(function () {
     function done_experiment() {
         console.log('Done entire experiment.');
         alert('Thank you. The entire experiment is done.');
+        Cookies.set('timer', 'false');
+        window.location.replace("/");
     }
 
 });
