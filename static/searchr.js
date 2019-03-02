@@ -96,22 +96,49 @@ $(function () {
             if (seconds > 0) {
                 timeoutHandler = setTimeout(tick, 1000);
             } else {
-                alert('You are out of time! Click to start the next exercise.');
-                Cookies.set('seconds', begin_seconds);
-                countdown();
-                window.location.replace("/search?q=");
+                alert('You are out of time! Click to start the next assignment.');
+                done_assignment();
             }
         }
         tick();
     }
 
-    // Start the experiment when the button is pressed.
-    $("#start_experiment").click(function () {
-        if(Cookies.get('timer') === 'true') {
+    $(document).ready(function () {
+        if(Cookies.get('timer') === 'true' && false) {
            countdown();
         }
+    });
+
+    // Start the experiment when the button is pressed.
+    $("#start_experiment").click(function () {
+        console.log('start experiment clicked');
         Cookies.set('assignment', 1);
         window.location.replace("/search?q=");
     });
+
+    $("#done_assignment").click(done_assignment);
+
+    // Function which is called if the current assignment is done (or time has run out).
+    function done_assignment() {
+        console.log('Done assignment.');
+        if(Cookies.get('timer') === 'true') {
+            Cookies.set('seconds', begin_seconds);
+            countdown();
+        }
+
+        var current_assignment = parseInt(Cookies.get('assignment'));
+        if(current_assignment <= 4) {
+            Cookies.set('assignment', parseInt(Cookies.get('assignment')) + 1);
+            window.location.replace("/search?q=");
+        } else {
+            done_experiment();
+        }
+
+    }
+
+    function done_experiment() {
+        console.log('Done entire experiment.');
+        alert('Thank you. The entire experiment is done.');
+    }
 
 });
