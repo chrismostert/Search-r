@@ -1,5 +1,7 @@
 $(function () {
-    const begin_seconds = 5; // At how many seconds should the timer start.
+    const begin_seconds = 300; // At how many seconds should the timer start.
+
+    var init_mode = true;
 
     $('#experiment_explanation').load('static/experiment_explanation.html');
     $('#assignment_explanation').load('static/assignment_' + Cookies.get('assignment') + '.html');
@@ -30,6 +32,9 @@ $(function () {
             selected.push({"title": title, "docid": docid});
             localStorage.setItem("selected", JSON.stringify(selected));
             selectedList.append("<li class=\"list-group-item " + docid + "\">" + title + "</li>");
+            if (!init_mode) {
+                log_activity("Select ("+docid+"): "+title);
+            }
         } else {
             card.removeClass("border-primary");
             card.removeClass("text-primary");
@@ -41,6 +46,9 @@ $(function () {
             console.log(selector);
             selectedList.find(selector).remove();
             localStorage.setItem("selected", JSON.stringify(selected));
+            if (!init_mode) {
+                log_activity("Remove ("+docid+"): "+title);
+            }
         }
     });
     $(".cardselect").parent().parent().click(function () {
@@ -50,6 +58,9 @@ $(function () {
     $(".revealer").parent().parent().click(function () {
         $(this).parent().find(".fulltext").toggle("fast");
         $(this).parent().find(".highlight").toggle("fast");
+        var title = $(this).parent().find(".card-title").text();
+        var docid = $(this).parent().find(".card-subtitle").text().replace(".", "").replace("\\n", "").replace(" ", "");
+        log_activity("Toggle view article ("+docid+"): "+title);
     });
 
     $("button[type=submit]").click(function () {
@@ -63,15 +74,21 @@ $(function () {
         $(".results").find("." + selected[i]["docid"]).find(".cardselect").trigger("click");
     }
 
+
+
     // Toggle the timer cookie to indicate the use of the timer for this session.
     $("#toggle_timer").click(function () {
         timer_cookie = Cookies.get('timer');
         if (typeof timer_cookie === "undefined" || timer_cookie === 'false') {
             Cookies.set('timer', 'true');
+            log_activity("The timer is now being used.");
             alert("The timer is now being used.");
+            log_activity("Timer started")
         } else if (timer_cookie === 'true') {
             Cookies.set('timer', 'false');
+            log_activity("The timer is now disabled.");
             alert("The timer is now disabled.");
+            log_activity("Timer stopped")
         }
     });
 
@@ -94,6 +111,7 @@ $(function () {
             if (seconds > 0) {
                 timeoutHandler = setTimeout(tick, 1000);
             } else {
+                log_activity('User is out of time! Click to start the next assignment.');
                 alert('You are out of time! Click to start the next assignment.');
                 done_assignment();
             }
@@ -112,6 +130,8 @@ $(function () {
     $("#start_experiment").click(function () {
         console.log('start experiment clicked');
         Cookies.set('assignment', 1);
+        log_activity("start Assignment 1");
+        //TODO misschien wil je hier liever de pagina refreshen?
         window.location.replace("/search?q=");
     });
 
@@ -127,9 +147,12 @@ $(function () {
 
         var current_assignment = parseInt(Cookies.get('assignment'));
         if (current_assignment <= 4) {
-            Cookies.set('assignment', parseInt(Cookies.get('assignment')) + 1);
-            window.location.replace("/search?q=");
+            var newAssignment = parseInt(Cookies.get('assignment')) + 1
+            Cookies.set('assignment', newAssignment);
+            log_activity("start Assignment "+newAssignment);
+            window.location.replace("/");
         } else {
+            // TODO does this result in infinite recursion??
             done_experiment();
         }
 
@@ -141,5 +164,17 @@ $(function () {
         Cookies.set('timer', 'false');
         window.location.replace("/");
     }
+
+    function log_activity(message) {
+        //$.post("log",{"message": message}, function (d) {}, "json")
+        $.ajax({
+            type: "POST",
+            url: "log",
+            data: JSON.stringify({"message": message}),
+            contentType: 'application/json',
+        });
+    }
+
+    init_mode = false;
 
 });
