@@ -242,6 +242,8 @@ $(function () {
             clearCookies();
             return;
         }
+
+        alert("Do not forget to put the website on FULLSCREEN!")
     });
 
 });
