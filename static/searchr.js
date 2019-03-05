@@ -152,12 +152,14 @@ $(function () {
 
     function log_activity(message) {
         //$.post("log",{"message": message}, function (d) {}, "json")
-        $.ajax({
+        if(typeof Cookies.get('assignment') !== "undefined"){
+            $.ajax({
             type: "POST",
             url: "log",
             data: JSON.stringify({"message": message}),
             contentType: 'application/json',
-        });
+            });
+        }
     }
 
     init_mode = false;
