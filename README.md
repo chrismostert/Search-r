@@ -1,5 +1,3 @@
-index.py has the following dependencies:
-- whoosh `pip install whoosh`
-- BeautifulSoup4 `pip install beautifulsoup4` (only needed for indexing)
-- numpy `pip install numpy`
-- flask `pip install flask`
+All of the dependencies needed can  be installed by running:
+
+`pip install -r requirements.txt`

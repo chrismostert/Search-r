@@ -146,7 +146,7 @@ $(function () {
         }
 
         var current_assignment = parseInt(Cookies.get('assignment'));
-        if (current_assignment <= 4) {
+        if (current_assignment < 4) {
             var newAssignment = parseInt(Cookies.get('assignment')) + 1
             Cookies.set('assignment', newAssignment);
             log_activity("start Assignment "+newAssignment);
