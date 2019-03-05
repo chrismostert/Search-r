@@ -115,6 +115,12 @@ $(function () {
         if (Cookies.get('timer') === 'true') {
             countdown();
         }
+
+        if(typeof Cookies.get('assignment') === "undefined") {
+            $('#done_assignment').hide();
+        } else {
+            $('#back_to_home').hide();
+        }
     });
 
     // Start the experiment when the button is pressed.
@@ -123,9 +129,9 @@ $(function () {
             alert("Topics are not set!");
             return;
         }
-        log_activity("Start experiment");
-        log_activity("Start topic " + Cookies.get('topic_1'));
         Cookies.set('assignment', Cookies.get('topic_1'));
+        log_activity("Start experiment with user " + Cookies.get('user_id'));
+        log_activity("Start topic " + Cookies.get('topic_1'));
         //TODO misschien wil je hier liever de pagina refreshen?
         if(Cookies.get('timer') === 'true') {
             alert("The important debate has been rescheduled to tomorrow. " +
@@ -143,7 +149,7 @@ $(function () {
 
     // Function which is called if the current assignment is done (or time has run out).
     function done_assignment() {
-        console.log('Done with topic.');
+        log_activity('Done with topic.');
         if (Cookies.get('timer') === 'true') {
             Cookies.set('seconds', begin_seconds);
             countdown();
@@ -166,7 +172,7 @@ $(function () {
         console.log('Done entire experiment.');
         alert('Thank you. The entire experiment is done.');
         clearCookies();
-        window.location.replace("/");
+        window.location.replace("https://docs.google.com/forms/d/e/1FAIpQLSfj4FoK6ev-hioVVvqm6MQxL1ONvqQj3zjekaPwypY3Fj1NWw/viewform");
     }
 
     function log_activity(message) {
@@ -183,17 +189,31 @@ $(function () {
 
     init_mode = false;
 
+    $("#back_to_home").click(function (){
+        window.location.replace('/');
+    });
+
     function clearCookies() {
         Cookies.remove('started_second_assignment');
         Cookies.remove('assignment');
         Cookies.remove('topic_1');
         Cookies.remove('topic_2');
         Cookies.remove('timer');
+        Cookies.remove('user_id')
     }
 
     // Function to set the settings of this experiment in cookies.
     $("#settings").click(function settings(){
         clearCookies();
+
+        const user_id = prompt("What is the id of the user? Use 0 for testing.","0");
+        if($.isNumeric(user_id) && parseInt(user_id) <= 15 && parseInt(user_id) >= 0) {
+            Cookies.set('user_id', user_id);
+        } else {
+            alert("Invalid input. Try again.");
+            clearCookies();
+            return;
+        }
 
         const use_timer = prompt("Use the timer? yes/no","");
         if (use_timer === "yes") {
