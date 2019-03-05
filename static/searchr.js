@@ -83,24 +83,6 @@ $(function () {
         selectedList.append('<li class="list-group-item '+docid+' ">'+title+'</li>');
     }
 
-
-
-    // Toggle the timer cookie to indicate the use of the timer for this session.
-    $("#toggle_timer").click(function () {
-        timer_cookie = Cookies.get('timer');
-        if (typeof timer_cookie === "undefined" || timer_cookie === 'false') {
-            Cookies.set('timer', 'true');
-            log_activity("The timer is now being used.");
-            alert("The timer is now being used.");
-            log_activity("Timer started")
-        } else if (timer_cookie === 'true') {
-            Cookies.set('timer', 'false');
-            log_activity("The timer is now disabled.");
-            alert("The timer is now disabled.");
-            log_activity("Timer stopped")
-        }
-    });
-
     // The function which keeps track of time. It uses cookies, so works across pages.
     var timeoutHandler;
 
@@ -120,8 +102,8 @@ $(function () {
             if (seconds > 0) {
                 timeoutHandler = setTimeout(tick, 1000);
             } else {
-                log_activity('User is out of time! Click to start the next assignment.');
-                alert('You are out of time! Click to start the next assignment.');
+                log_activity('User is out of time! Click to start the next research topic.');
+                alert('You are out of time! Click to start the next research topic.');
                 done_assignment();
             }
         }
@@ -137,20 +119,31 @@ $(function () {
 
     // Start the experiment when the button is pressed.
     $("#start_experiment").click(function () {
-        console.log('start experiment clicked');
-        Cookies.set('assignment', 1);
+        if(typeof Cookies.get('topic_1') === "undefined"){
+            alert("Topics are not set!");
+            return;
+        }
+        log_activity("Start experiment");
+        log_activity("Start topic " + Cookies.get('topic_1'));
+        Cookies.set('assignment', Cookies.get('topic_1'));
+        //TODO misschien wil je hier liever de pagina refreshen?
+        if(Cookies.get('timer') === 'true') {
+            alert("The important debate has been rescheduled to tomorrow. " +
+                "This means that you now have only limited time to prepare. " +
+                "You only have 5 minutes of research time per topic. " +
+                "Try to use the time as efficiently as possible! " +
+                "The system will let you know when your are out of time and you need to move on to the next research topic." +
+                "Click OK to start the experiment.");
+        }
         // Clear all selected topics
         localStorage.setItem("selected", JSON.stringify([]));
-        log_activity("start Assignment 1");
-        //TODO misschien wil je hier liever de pagina refreshen?
-        window.location.reload();
-    });
+        window.location.replace("/search?q=");    });
 
     $("#done_assignment").click(done_assignment);
 
     // Function which is called if the current assignment is done (or time has run out).
     function done_assignment() {
-        console.log('Done assignment.');
+        console.log('Done with topic.');
         if (Cookies.get('timer') === 'true') {
             Cookies.set('seconds', begin_seconds);
             countdown();
@@ -158,12 +151,11 @@ $(function () {
         // Clear all selected topics
         localStorage.setItem("selected", JSON.stringify([]));
 
-        var current_assignment = parseInt(Cookies.get('assignment'));
-        if (current_assignment <= 4) {
-            var newAssignment = parseInt(Cookies.get('assignment')) + 1;
-            Cookies.set('assignment', newAssignment);
-            log_activity("start Assignment "+newAssignment);
-            window.location.replace("/");
+        if (typeof Cookies.get('started_second_assignment') === "undefined") {
+            log_activity("Start topic " + Cookies.get('topic_2'));
+            Cookies.set('assignment', Cookies.get('topic_2'));
+            Cookies.set('started_second_assignment', 'true');
+            window.location.replace("/search?q=");
         } else {
             done_experiment();
         }
@@ -173,19 +165,63 @@ $(function () {
     function done_experiment() {
         console.log('Done entire experiment.');
         alert('Thank you. The entire experiment is done.');
-        Cookies.set('timer', 'false');
+        clearCookies();
         window.location.replace("/");
     }
 
     function log_activity(message) {
-        $.ajax({
+        //$.post("log",{"message": message}, function (d) {}, "json")
+        if(typeof Cookies.get('assignment') !== "undefined"){
+            $.ajax({
             type: "POST",
             url: "log",
             data: JSON.stringify({"message": message}),
             contentType: 'application/json',
-        });
+            });
+        }
     }
 
     init_mode = false;
+
+    function clearCookies() {
+        Cookies.remove('started_second_assignment');
+        Cookies.remove('assignment');
+        Cookies.remove('topic_1');
+        Cookies.remove('topic_2');
+        Cookies.remove('timer');
+    }
+
+    // Function to set the settings of this experiment in cookies.
+    $("#settings").click(function settings(){
+        clearCookies();
+
+        const use_timer = prompt("Use the timer? yes/no","");
+        if (use_timer === "yes") {
+            Cookies.set('timer', 'true');
+        } else if (use_timer === "no") {
+            Cookies.set('timer', 'false');
+        } else {
+            alert("Invalid input. Try again.");
+            clearCookies();
+            return;
+        }
+
+        const topic_1 = prompt("What is the first topic number? 1 / 2 / 3 / 4 . Order matters!","");
+        if($.isNumeric(topic_1) && parseInt(topic_1) <= 4 && parseInt(topic_1) >= 0) {
+            Cookies.set("topic_1", topic_1);
+        } else {
+            alert("Invalid input. Try again.");
+            clearCookies();
+            return;
+        }
+        const topic_2 = prompt("What is the second topic number? 1 / 2 / 3 / 4 . Order matters!","");
+        if($.isNumeric(topic_2) && parseInt(topic_2) <= 4 && parseInt(topic_2) >= 0) {
+            Cookies.set("topic_2", topic_2);
+        } else {
+            alert("Invalid input. Try again.");
+            clearCookies();
+            return;
+        }
+    });
 
 });
