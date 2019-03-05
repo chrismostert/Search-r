@@ -133,7 +133,7 @@ $(function () {
                 "You only have 5 minutes of research time per topic. " +
                 "Try to use the time as efficiently as possible! " +
                 "The system will let you know when your are out of time and you need to move on to the next research topic." +
-                "Click to start the experiment.");
+                "Click OK to start the experiment.");
         }
         // Clear all selected topics
         localStorage.setItem("selected", JSON.stringify([]));
