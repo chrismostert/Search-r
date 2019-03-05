@@ -93,8 +93,8 @@ $(function () {
             if (seconds > 0) {
                 timeoutHandler = setTimeout(tick, 1000);
             } else {
-                log_activity('User is out of time! Click to start the next assignment.');
-                alert('You are out of time! Click to start the next assignment.');
+                log_activity('User is out of time! Click to start the next research topic.');
+                alert('You are out of time! Click to start the next research topic.');
                 done_assignment();
             }
         }
@@ -118,6 +118,14 @@ $(function () {
         log_activity("Start topic " + Cookies.get('topic_1'));
         Cookies.set('assignment', Cookies.get('topic_1'));
         //TODO misschien wil je hier liever de pagina refreshen?
+        if(Cookies.get('timer') === 'true') {
+            alert("The important debate has been rescheduled to tomorrow. " +
+                "This means that you now have only limited time to prepare. " +
+                "You only have 5 minutes of research time per topic. " +
+                "Try to use the time as efficiently as possible! " +
+                "The system will let you know when your are out of time and you need to move on to the next research topic." +
+                "Click to start the experiment.");
+        }
         window.location.replace("/search?q=");
     });
 
