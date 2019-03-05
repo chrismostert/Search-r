@@ -147,6 +147,9 @@ $(function () {
         console.log('Done entire experiment.');
         alert('Thank you. The entire experiment is done.');
         Cookies.remove('started_second_assignment');
+        Cookies.remove('assignment');
+        Cookies.remove('topic_1');
+        Cookies.remove('topic_2');
         Cookies.set('timer', 'false');
         window.location.replace("/");
     }
