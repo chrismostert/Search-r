@@ -146,11 +146,7 @@ $(function () {
     function done_experiment() {
         console.log('Done entire experiment.');
         alert('Thank you. The entire experiment is done.');
-        Cookies.remove('started_second_assignment');
-        Cookies.remove('assignment');
-        Cookies.remove('topic_1');
-        Cookies.remove('topic_2');
-        Cookies.set('timer', 'false');
+        clearCookies();
         window.location.replace("/");
     }
 
@@ -166,8 +162,18 @@ $(function () {
 
     init_mode = false;
 
+    function clearCookies() {
+        Cookies.remove('started_second_assignment');
+        Cookies.remove('assignment');
+        Cookies.remove('topic_1');
+        Cookies.remove('topic_2');
+        Cookies.remove('timer');
+    }
+
     // Function to set the settings of this experiment in cookies.
     $("#settings").click(function settings(){
+        clearCookies();
+
         const use_timer = prompt("Use the timer? yes/no","");
         if (use_timer === "yes") {
             Cookies.set('timer', 'true');
@@ -175,6 +181,7 @@ $(function () {
             Cookies.set('timer', 'false');
         } else {
             alert("Invalid input. Try again.");
+            clearCookies();
             return;
         }
 
@@ -183,6 +190,7 @@ $(function () {
             Cookies.set("topic_1", topic_1);
         } else {
             alert("Invalid input. Try again.");
+            clearCookies();
             return;
         }
         const topic_2 = prompt("What is the second topic number? 1 / 2 / 3 / 4 . Order matters!","");
@@ -190,6 +198,7 @@ $(function () {
             Cookies.set("topic_2", topic_2);
         } else {
             alert("Invalid input. Try again.");
+            clearCookies();
             return;
         }
     });
