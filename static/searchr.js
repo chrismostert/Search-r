@@ -38,12 +38,13 @@ $(function () {
         } else {
             card.removeClass("border-primary");
             card.removeClass("text-primary");
-            var idx = selected.indexOf(title);
-            if (idx >= 0) {
-                selected.splice(idx, 1);
+            for (var i = 0; i < selected.length; i++) {
+                if (selected[i].docid === docid) {
+                    selected.splice(i,1);
+                    break;
+                }
             }
             var selector = '.' + docid;
-            console.log(selector);
             selectedList.find(selector).remove();
             localStorage.setItem("selected", JSON.stringify(selected));
             if (!init_mode) {
@@ -72,6 +73,14 @@ $(function () {
     for (var i = 0; i < selected.length; i++) {
         console.log("click " + "." + selected[i]["docid"]);
         $(".results").find("." + selected[i]["docid"]).find(".cardselect").trigger("click");
+    }
+    var selectedList = $(".selectedlist");
+    selectedList.html("");
+
+    for (var i = 0; i < selected.length; i++) {
+        var docid = selected[i]["docid"];
+        var title = selected[i]["title"];
+        selectedList.append('<li class="list-group-item '+docid+' ">'+title+'</li>');
     }
 
 
@@ -130,9 +139,11 @@ $(function () {
     $("#start_experiment").click(function () {
         console.log('start experiment clicked');
         Cookies.set('assignment', 1);
+        // Clear all selected topics
+        localStorage.setItem("selected", JSON.stringify([]));
         log_activity("start Assignment 1");
         //TODO misschien wil je hier liever de pagina refreshen?
-        window.location.replace("/search?q=");
+        window.location.reload();
     });
 
     $("#done_assignment").click(done_assignment);
@@ -144,15 +155,16 @@ $(function () {
             Cookies.set('seconds', begin_seconds);
             countdown();
         }
+        // Clear all selected topics
+        localStorage.setItem("selected", JSON.stringify([]));
 
         var current_assignment = parseInt(Cookies.get('assignment'));
         if (current_assignment <= 4) {
-            var newAssignment = parseInt(Cookies.get('assignment')) + 1
+            var newAssignment = parseInt(Cookies.get('assignment')) + 1;
             Cookies.set('assignment', newAssignment);
             log_activity("start Assignment "+newAssignment);
             window.location.replace("/");
         } else {
-            // TODO does this result in infinite recursion??
             done_experiment();
         }
 
@@ -166,7 +178,6 @@ $(function () {
     }
 
     function log_activity(message) {
-        //$.post("log",{"message": message}, function (d) {}, "json")
         $.ajax({
             type: "POST",
             url: "log",
