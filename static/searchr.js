@@ -38,12 +38,13 @@ $(function () {
         } else {
             card.removeClass("border-primary");
             card.removeClass("text-primary");
-            var idx = selected.indexOf(title);
-            if (idx >= 0) {
-                selected.splice(idx, 1);
+            for (var i = 0; i < selected.length; i++) {
+                if (selected[i].docid === docid) {
+                    selected.splice(i,1);
+                    break;
+                }
             }
             var selector = '.' + docid;
-            console.log(selector);
             selectedList.find(selector).remove();
             localStorage.setItem("selected", JSON.stringify(selected));
             if (!init_mode) {
@@ -72,6 +73,14 @@ $(function () {
     for (var i = 0; i < selected.length; i++) {
         console.log("click " + "." + selected[i]["docid"]);
         $(".results").find("." + selected[i]["docid"]).find(".cardselect").trigger("click");
+    }
+    var selectedList = $(".selectedlist");
+    selectedList.html("");
+
+    for (var i = 0; i < selected.length; i++) {
+        var docid = selected[i]["docid"];
+        var title = selected[i]["title"];
+        selectedList.append('<li class="list-group-item '+docid+' ">'+title+'</li>');
     }
 
     // The function which keeps track of time. It uses cookies, so works across pages.
@@ -126,8 +135,9 @@ $(function () {
                 "The system will let you know when your are out of time and you need to move on to the next research topic." +
                 "Click to start the experiment.");
         }
-        window.location.replace("/search?q=");
-    });
+        // Clear all selected topics
+        localStorage.setItem("selected", JSON.stringify([]));
+        window.location.replace("/search?q=");    });
 
     $("#done_assignment").click(done_assignment);
 
@@ -138,6 +148,8 @@ $(function () {
             Cookies.set('seconds', begin_seconds);
             countdown();
         }
+        // Clear all selected topics
+        localStorage.setItem("selected", JSON.stringify([]));
 
         if (typeof Cookies.get('started_second_assignment') === "undefined") {
             log_activity("Start topic " + Cookies.get('topic_2'));
@@ -145,7 +157,6 @@ $(function () {
             Cookies.set('started_second_assignment', 'true');
             window.location.replace("/search?q=");
         } else {
-            // TODO does this result in infinite recursion??
             done_experiment();
         }
 
