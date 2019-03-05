@@ -74,24 +74,6 @@ $(function () {
         $(".results").find("." + selected[i]["docid"]).find(".cardselect").trigger("click");
     }
 
-
-
-    // Toggle the timer cookie to indicate the use of the timer for this session.
-    $("#toggle_timer").click(function () {
-        timer_cookie = Cookies.get('timer');
-        if (typeof timer_cookie === "undefined" || timer_cookie === 'false') {
-            Cookies.set('timer', 'true');
-            log_activity("The timer is now being used.");
-            alert("The timer is now being used.");
-            log_activity("Timer started")
-        } else if (timer_cookie === 'true') {
-            Cookies.set('timer', 'false');
-            log_activity("The timer is now disabled.");
-            alert("The timer is now disabled.");
-            log_activity("Timer stopped")
-        }
-    });
-
     // The function which keeps track of time. It uses cookies, so works across pages.
     var timeoutHandler;
 
@@ -128,9 +110,13 @@ $(function () {
 
     // Start the experiment when the button is pressed.
     $("#start_experiment").click(function () {
-        console.log('start experiment clicked');
-        Cookies.set('assignment', 1);
-        log_activity("start Assignment 1");
+        if(typeof Cookies.get('topic_1') === "undefined"){
+            alert("Topics are not set!");
+            return;
+        }
+        log_activity("Start experiment");
+        log_activity("Start topic " + Cookies.get('topic_1'));
+        Cookies.set('assignment', Cookies.get('topic_1'));
         //TODO misschien wil je hier liever de pagina refreshen?
         window.location.replace("/search?q=");
     });
@@ -139,18 +125,17 @@ $(function () {
 
     // Function which is called if the current assignment is done (or time has run out).
     function done_assignment() {
-        console.log('Done assignment.');
+        console.log('Done with topic.');
         if (Cookies.get('timer') === 'true') {
             Cookies.set('seconds', begin_seconds);
             countdown();
         }
 
-        var current_assignment = parseInt(Cookies.get('assignment'));
-        if (current_assignment < 4) {
-            var newAssignment = parseInt(Cookies.get('assignment')) + 1
-            Cookies.set('assignment', newAssignment);
-            log_activity("start Assignment "+newAssignment);
-            window.location.replace("/");
+        if (typeof Cookies.get('started_second_assignment') === "undefined") {
+            log_activity("Start topic " + Cookies.get('topic_2'));
+            Cookies.set('assignment', Cookies.get('topic_2'));
+            Cookies.set('started_second_assignment', 'true');
+            window.location.replace("/search?q=");
         } else {
             // TODO does this result in infinite recursion??
             done_experiment();
@@ -161,6 +146,7 @@ $(function () {
     function done_experiment() {
         console.log('Done entire experiment.');
         alert('Thank you. The entire experiment is done.');
+        Cookies.remove('started_second_assignment');
         Cookies.set('timer', 'false');
         window.location.replace("/");
     }
@@ -176,5 +162,33 @@ $(function () {
     }
 
     init_mode = false;
+
+    // Function to set the settings of this experiment in cookies.
+    $("#settings").click(function settings(){
+        const use_timer = prompt("Use the timer? yes/no","");
+        if (use_timer === "yes") {
+            Cookies.set('timer', 'true');
+        } else if (use_timer === "no") {
+            Cookies.set('timer', 'false');
+        } else {
+            alert("Invalid input. Try again.");
+            return;
+        }
+
+        const topic_1 = prompt("What is the first topic number? 1 / 2 / 3 / 4 . Order matters!","");
+        if($.isNumeric(topic_1) && parseInt(topic_1) <= 4 && parseInt(topic_1) >= 0) {
+            Cookies.set("topic_1", topic_1);
+        } else {
+            alert("Invalid input. Try again.");
+            return;
+        }
+        const topic_2 = prompt("What is the second topic number? 1 / 2 / 3 / 4 . Order matters!","");
+        if($.isNumeric(topic_2) && parseInt(topic_2) <= 4 && parseInt(topic_2) >= 0) {
+            Cookies.set("topic_2", topic_2);
+        } else {
+            alert("Invalid input. Try again.");
+            return;
+        }
+    });
 
 });
