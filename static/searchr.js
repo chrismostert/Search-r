@@ -33,14 +33,14 @@ $(function () {
             localStorage.setItem("selected", JSON.stringify(selected));
             selectedList.append("<li class=\"list-group-item " + docid + "\">" + title + "</li>");
             if (!init_mode) {
-                log_activity("Select ("+docid+"): "+title);
+                log_activity("Select (" + docid + "): " + title);
             }
         } else {
             card.removeClass("border-primary");
             card.removeClass("text-primary");
             for (var i = 0; i < selected.length; i++) {
                 if (selected[i].docid === docid) {
-                    selected.splice(i,1);
+                    selected.splice(i, 1);
                     break;
                 }
             }
@@ -48,7 +48,7 @@ $(function () {
             selectedList.find(selector).remove();
             localStorage.setItem("selected", JSON.stringify(selected));
             if (!init_mode) {
-                log_activity("Remove ("+docid+"): "+title);
+                log_activity("Remove (" + docid + "): " + title);
             }
         }
     });
@@ -61,7 +61,7 @@ $(function () {
         $(this).parent().find(".highlight").toggle("fast");
         var title = $(this).parent().find(".card-title").text();
         var docid = $(this).parent().find(".card-subtitle").text().replace(".", "").replace("\\n", "").replace(" ", "");
-        log_activity("Toggle view article ("+docid+"): "+title);
+        log_activity("Toggle view article (" + docid + "): " + title);
     });
 
     $("button[type=submit]").click(function () {
@@ -80,7 +80,7 @@ $(function () {
     for (var i = 0; i < selected.length; i++) {
         var docid = selected[i]["docid"];
         var title = selected[i]["title"];
-        selectedList.append('<li class="list-group-item '+docid+' ">'+title+'</li>');
+        selectedList.append('<li class="list-group-item ' + docid + ' ">' + title + '</li>');
     }
 
     // The function which keeps track of time. It uses cookies, so works across pages.
@@ -116,7 +116,7 @@ $(function () {
             countdown();
         }
 
-        if(typeof Cookies.get('assignment') === "undefined") {
+        if (typeof Cookies.get('assignment') === "undefined") {
             $('#done_assignment').hide();
         } else {
             $('#back_to_home').hide();
@@ -125,15 +125,14 @@ $(function () {
 
     // Start the experiment when the button is pressed.
     $("#start_experiment").click(function () {
-        if(typeof Cookies.get('topic_1') === "undefined"){
+        if (typeof Cookies.get('topic_1') === "undefined") {
             alert("Topics are not set!");
             return;
         }
         Cookies.set('assignment', Cookies.get('topic_1'));
         log_activity("Start experiment with user " + Cookies.get('user_id'));
         log_activity("Start topic " + Cookies.get('topic_1'));
-        //TODO misschien wil je hier liever de pagina refreshen?
-        if(Cookies.get('timer') === 'true') {
+        if (Cookies.get('timer') === 'true') {
             alert("The important debate has been rescheduled to tomorrow. " +
                 "This means that you now have only limited time to prepare. " +
                 "You only have 5 minutes of research time per topic. " +
@@ -143,7 +142,8 @@ $(function () {
         }
         // Clear all selected topics
         localStorage.setItem("selected", JSON.stringify([]));
-        window.location.replace("/search?q=");    });
+        window.location.replace("/search?q=");
+    });
 
     $("#done_assignment").click(done_assignment);
 
@@ -177,19 +177,19 @@ $(function () {
 
     function log_activity(message) {
         //$.post("log",{"message": message}, function (d) {}, "json")
-        if(typeof Cookies.get('assignment') !== "undefined"){
+        if (typeof Cookies.get('assignment') !== "undefined") {
             $.ajax({
-            type: "POST",
-            url: "log",
-            data: JSON.stringify({"message": message}),
-            contentType: 'application/json',
+                type: "POST",
+                url: "log",
+                data: JSON.stringify({"message": message}),
+                contentType: 'application/json',
             });
         }
     }
 
     init_mode = false;
 
-    $("#back_to_home").click(function (){
+    $("#back_to_home").click(function () {
         window.location.replace('/');
     });
 
@@ -199,15 +199,16 @@ $(function () {
         Cookies.remove('topic_1');
         Cookies.remove('topic_2');
         Cookies.remove('timer');
-        Cookies.remove('user_id')
+        Cookies.remove('user_id');
+        Cookies.remove('seconds');
     }
 
     // Function to set the settings of this experiment in cookies.
-    $("#settings").click(function settings(){
+    $("#settings").click(function settings() {
         clearCookies();
 
-        const user_id = prompt("What is the id of the user? Use 0 for testing.","0");
-        if($.isNumeric(user_id) && parseInt(user_id) <= 15 && parseInt(user_id) >= 0) {
+        const user_id = prompt("What is the id of the user? Use 0 for testing.", "0");
+        if ($.isNumeric(user_id) && parseInt(user_id) <= 15 && parseInt(user_id) >= 0) {
             Cookies.set('user_id', user_id);
         } else {
             alert("Invalid input. Try again.");
@@ -215,7 +216,7 @@ $(function () {
             return;
         }
 
-        const use_timer = prompt("Use the timer? yes/no","");
+        const use_timer = prompt("Use the timer? yes/no", "");
         if (use_timer === "yes") {
             Cookies.set('timer', 'true');
         } else if (use_timer === "no") {
@@ -226,16 +227,16 @@ $(function () {
             return;
         }
 
-        const topic_1 = prompt("What is the first topic number? 1 / 2 / 3 / 4 . Order matters!","");
-        if($.isNumeric(topic_1) && parseInt(topic_1) <= 4 && parseInt(topic_1) >= 0) {
+        const topic_1 = prompt("What is the first topic number? 1 / 2 / 3 / 4 . Order matters!", "");
+        if ($.isNumeric(topic_1) && parseInt(topic_1) <= 4 && parseInt(topic_1) >= 0) {
             Cookies.set("topic_1", topic_1);
         } else {
             alert("Invalid input. Try again.");
             clearCookies();
             return;
         }
-        const topic_2 = prompt("What is the second topic number? 1 / 2 / 3 / 4 . Order matters!","");
-        if($.isNumeric(topic_2) && parseInt(topic_2) <= 4 && parseInt(topic_2) >= 0) {
+        const topic_2 = prompt("What is the second topic number? 1 / 2 / 3 / 4 . Order matters!", "");
+        if ($.isNumeric(topic_2) && parseInt(topic_2) <= 4 && parseInt(topic_2) >= 0) {
             Cookies.set("topic_2", topic_2);
         } else {
             alert("Invalid input. Try again.");
@@ -243,7 +244,7 @@ $(function () {
             return;
         }
 
-        alert("Do not forget to put the website on FULLSCREEN!")
+        alert("Do not forget to put the website on FULLSCREEN!");
     });
 
 });
