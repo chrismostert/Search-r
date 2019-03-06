@@ -22,8 +22,6 @@ ix = create_in("index", schema)
 writer = ix.writer();
 matchcount = 1
 
-count = 1
-
 # For every file in the 'aquaint' folder, index it
 for root, dirs, files in os.walk('aquaint'):
     for file in files:
@@ -48,10 +46,5 @@ for root, dirs, files in os.walk('aquaint'):
                     print('Total matches', matchcount)
                     matchcount += 1
                     writer.add_document(title=t, docID=d, content=c)
-
-                if(count > 10):
-                    print('Random sample added')
-                    writer.add_document(title=t, docID=d, content=c)
-                    count = 1
 
 writer.commit()
