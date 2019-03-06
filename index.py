@@ -14,6 +14,8 @@ with open('qrels.txt', 'r') as q:
     for id in re.findall(r'\d+ 0 (\w+.\w+) \d', content):
         rels.add(str(id))
 
+print(rels)
+
 
 ## Define the schema
 schema = Schema(title=TEXT(stored=True), docID=ID(stored=True), content=TEXT(stored=True))
@@ -28,7 +30,6 @@ for root, dirs, files in os.walk('aquaint'):
         with open(os.path.join(root, file), "r") as f:
             soup = BeautifulSoup(f.read(), 'html.parser')
             for doc in soup.find_all('doc'):
-                count += 1
                 try:
                     t = str(doc.find('headline').text)
                 except:
