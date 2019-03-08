@@ -85,9 +85,9 @@ $(function () {
 
     // The function which keeps track of time. It uses cookies, so works across pages.
     var timeoutHandler;
+    var seconds = begin_seconds;
 
     function countdown() {
-        var seconds = begin_seconds;
         if (typeof Cookies.get('seconds') !== "undefined") {
             seconds = Cookies.get("seconds");
         }
@@ -149,11 +149,17 @@ $(function () {
 
     // Function which is called if the current assignment is done (or time has run out).
     function done_assignment() {
-        log_activity('Done with topic.');
-        if (Cookies.get('timer') === 'true') {
-            Cookies.set('seconds', begin_seconds);
-            countdown();
+        if (Cookies.get('timer') === 'true'){
+            if(seconds > 0) {
+                seconds = 0;
+            return;
+            } else {
+                Cookies.set('seconds', begin_seconds);
+                countdown();
+            }
         }
+
+        log_activity('Done with topic.');
         // Clear all selected topics
         localStorage.setItem("selected", JSON.stringify([]));
 
