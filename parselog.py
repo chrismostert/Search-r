@@ -131,9 +131,9 @@ for file in os.listdir('logs'):
 
         with open('qrels.txt', 'r') as f:
             rels = f.read()
-            for id in re.findall(r'(?:' + trecids[topics[0]] + ') 0 (\w+.\w+)', rels):
+            for id in re.findall(r'(?:' + trecids[topics[0]] + ') 0 (\w+.\w+) [^0]', rels):
                 t1_rels.add(id)
-            for id in re.findall(r'(?:' + trecids[topics[1]] + ') 0 (\w+.\w+)', rels):
+            for id in re.findall(r'(?:' + trecids[topics[1]] + ') 0 (\w+.\w+) [^0]', rels):
                 t2_rels.add(id)
 
         interactiverecall.append(len(t1_rels.intersection(t1_selected))/len(t1_rels))
